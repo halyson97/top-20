@@ -10,4 +10,21 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const hasToken = !!localStorage.getItem("top20_token");
+    const status = error?.response?.status;
+
+    if (hasToken && status === 401) {
+      localStorage.removeItem("top20_token");
+      if (window.location.pathname !== "/admin/login") {
+        window.location.href = "/admin/login";
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export default api;

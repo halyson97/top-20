@@ -10,11 +10,30 @@ function PrivateRoute({ children }) {
   return token ? children : <Navigate to="/admin/login" replace />;
 }
 
+function RedirectIfAuthenticated({ children }) {
+  const token = localStorage.getItem("top20_token");
+  return token ? <Navigate to="/admin/dashboard" replace /> : children;
+}
+
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/admin/login" element={<AdminLoginPage />} />
+      <Route
+        path="/"
+        element={
+          <RedirectIfAuthenticated>
+            <LandingPage />
+          </RedirectIfAuthenticated>
+        }
+      />
+      <Route
+        path="/admin/login"
+        element={
+          <RedirectIfAuthenticated>
+            <AdminLoginPage />
+          </RedirectIfAuthenticated>
+        }
+      />
       <Route
         path="/admin/dashboard"
         element={
